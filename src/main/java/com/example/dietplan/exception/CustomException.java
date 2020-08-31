@@ -1,16 +1,11 @@
 package com.example.dietplan.exception;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -18,25 +13,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomException extends ResponseEntityExceptionHandler {
-	
-	@ExceptionHandler(InvalidInputParamException.class)
-	public ResponseEntity<CustomErrorResponse> invalidgender(Exception ex, WebRequest requeste)  {
-		CustomErrorResponse errors = new CustomErrorResponse();
-        errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.NOT_FOUND.value());
 
-        return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
+	@ExceptionHandler(InvalidInputParamException.class)
+	public ResponseEntity<CustomErrorResponse> invalidgender(Exception ex, WebRequest requeste) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimestamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.BAD_REQUEST.value());
+
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
 
 	}
-	
+
 	@ExceptionHandler(ConstraintViolationException.class)
-	public final ResponseEntity<CustomErrorResponse> handleMissingParams(ConstraintViolationException ex,HttpServletResponse response) {
-	    CustomErrorResponse errors = new CustomErrorResponse();
-	    errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<CustomErrorResponse>(errors, HttpStatus.BAD_REQUEST);
+	public final ResponseEntity<CustomErrorResponse> handleMissingParams(ConstraintViolationException ex,
+			HttpServletResponse response) {
+		CustomErrorResponse errors = new CustomErrorResponse();
+		errors.setTimestamp(LocalDateTime.now());
+		errors.setError(ex.getMessage());
+		errors.setStatus(HttpStatus.BAD_REQUEST.value());
+		return new ResponseEntity<CustomErrorResponse>(errors, HttpStatus.BAD_REQUEST);
 	}
 
 }
